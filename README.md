@@ -3,6 +3,8 @@
 Small FastAPI service and helper scripts to generate interview-style flashcards using local Ollama or Google Gemini models.  
 This README explains how the repository pieces work, how to configure environment variables, and how to run the API and example scripts on Windows.
 
+<img width="2744" height="785" alt="image" src="https://github.com/user-attachments/assets/2c9a0dd1-ee46-4901-bd99-589085901b01" />
+
 ## Project layout (relevant files)
 - backend/
   - main.py                - FastAPI application with async job queue + sync endpoint
