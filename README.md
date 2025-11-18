@@ -3,12 +3,10 @@
 Small FastAPI service and helper scripts to generate interview-style flashcards using local Ollama or Google Gemini models.  
 This README explains how the repository pieces work, how to configure environment variables, and how to run the API and example scripts on Windows.
 
-<img width="2744" height="785" alt="image" src="https://github.com/user-attachments/assets/2c9a0dd1-ee46-4901-bd99-589085901b01" />
-
 ## Project layout (relevant files)
 - backend/
   - main.py                - FastAPI application with async job queue + sync endpoint
-  - multi_agent_system.py  - Ollama-based runner that requests a model at http://localhost:11434/api/generate
+  - multi_agent_system.py  - Ollama-based runner that requests a model at http://localhost:11435/api/generate
 - README.md
 
 ## Requirements
@@ -38,7 +36,7 @@ Create a `.env` in the project root (same folder as README) with relevant keys:
 For Ollama (local, default no API key required):
 ```
 # .env (optional for Ollama)
-OLLAMA_URL=http://localhost:11434/api/generate
+OLLAMA_URL=http://localhost:11435/api/generate
 OLLAMA_API_KEY=            # optional if your remote Ollama requires auth
 ```
 
@@ -48,22 +46,27 @@ OLLAMA_API_KEY=            # optional if your remote Ollama requires auth
 ```powershell
 ollama pull llama3.2:1b
 ```
-3. Start the Ollama HTTP server:
-```powershell
-ollama serve
+
 ```
-4. Confirm model is available:
+3. Confirm model is available:
 ```powershell
 ollama list
+
+4. Start the Ollama HTTP server:
+```powershell
+$env:OLLAMA_HOST="127.0.0.1:11435"; ollama serve
 ```
 
 ## Run the API (FastAPI)
 From project root:
 ```powershell
-.venv\Scripts\Activate.ps1
 cd backend
 uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
+
+## Run the Frontend (Streamlit)
+cd frontend
+streamlit run app.py
 
 Open http://127.0.0.1:8000/docs for interactive API docs (Swagger UI).
 

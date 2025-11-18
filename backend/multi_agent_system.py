@@ -10,20 +10,27 @@ import re
 def fix_and_parse_json(raw_text: str):
     print("[DEBUG] Attempting to parse JSON...")
 
-    # Step 1: Try normal strict JSON parse
+    # Step 1: Try strict parse
     try:
         return json.loads(raw_text), "strict"
     except Exception as e:
         print("[DEBUG] Strict parse failed:", e)
 
-    # Step 2: Remove weird backticks, code fences, whitespace
     cleaned = raw_text.strip()
     cleaned = re.sub(r"```json|```", "", cleaned).strip()
 
-    # Step 3: Remove trailing commas inside arrays/objects
+    # Remove trailing commas
     cleaned = re.sub(r",\s*([}\]])", r"\1", cleaned)
 
-    # Step 4: Try again
+    # Auto-close array if missing
+    if cleaned.count("[") > cleaned.count("]"):
+        cleaned = cleaned + "]"
+
+    # Auto-close object if missing
+    if cleaned.count("{") > cleaned.count("}"):
+        cleaned = cleaned + "}"
+
+    # Step 4: Try repaired parse
     try:
         parsed = json.loads(cleaned)
         print("[DEBUG] JSON repaired successfully.")
@@ -39,7 +46,7 @@ def fix_and_parse_json(raw_text: str):
 #                   MAIN OLLAMA CALL
 # ==========================================================
 async def super_simple_ollama_flashcards(text: str) -> dict:
-    url = "http://localhost:11434/api/generate"
+    url = "http://localhost:11435/api/generate"
 
     prompt = f"""
     Create exactly 5 technical interview flashcards about this topic: "{text}"
